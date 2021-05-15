@@ -27,7 +27,8 @@ public class TimerView : MonoBehaviour
     public Action OnClickPlay;
     public Action OnClickReset;
     public Action<float> OnTimeUpdate;
-
+    
+    
     void Awake()
     {
         playButtonText.text = "Play";

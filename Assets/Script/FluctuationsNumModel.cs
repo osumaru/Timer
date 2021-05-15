@@ -9,6 +9,20 @@ public class FluctuationsNumModel
     bool isPointerStay = false;
     bool isButtonActive = false;
     public int maxNum = 100;
+    public Action<bool> OnButtonAction;
+    private bool IsButtonActive
+    {
+        get { return isButtonActive; }
+        set
+        {
+            if (isButtonActive != value)
+            {
+                isButtonActive = value;
+                OnButtonAction(isButtonActive);
+            }
+        }
+    }
+    
     public int CurrentNum
     {
         get { return currentNum; }
@@ -38,7 +52,7 @@ public class FluctuationsNumModel
 
     public void OnClickButtonNum()
     {
-        isButtonActive = isPointerStay;
+        IsButtonActive = isPointerStay;
     }
 
     public void OnPointerEnter()
@@ -59,7 +73,10 @@ public class FluctuationsNumModel
             tempNum *= 10;
             tempNum += num;
             tempNum %= 100;
-            CurrentNum = tempNum;
+            if (tempNum <= maxNum)
+            {
+                CurrentNum = tempNum;
+            }
         }
     }
 

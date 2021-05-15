@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
+
 public class FluctuationsNumView : MonoBehaviour
 {
     [SerializeField] 
@@ -12,7 +13,9 @@ public class FluctuationsNumView : MonoBehaviour
 
     [SerializeField] 
     Button countDonwButton;
-    
+
+    [SerializeField]
+    Image activeImage;
     
     [SerializeField] 
     Text viewNum;
@@ -36,6 +39,28 @@ public class FluctuationsNumView : MonoBehaviour
 
     public Action<float> OnInputWheel;
 
+    struct hogehoge
+    {
+        private KeyCode keyPad;
+        private KeyCode alpha;
+    }
+    
+    
+    readonly KeyCode[] keyCodes = new KeyCode[]
+    {
+        KeyCode.Alpha0,
+        KeyCode.Alpha1,
+        KeyCode.Alpha2,
+        KeyCode.Alpha3,
+        KeyCode.Alpha4,
+        KeyCode.Alpha5,
+        KeyCode.Alpha6,
+        KeyCode.Alpha7,
+        KeyCode.Alpha8,
+        KeyCode.Alpha9
+    };
+    
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -56,19 +81,7 @@ public class FluctuationsNumView : MonoBehaviour
     void Update()
     {
         
-        KeyCode[] keyCodes = new KeyCode[]
-        {
-            KeyCode.Keypad0,
-            KeyCode.Keypad1,
-            KeyCode.Keypad2,
-            KeyCode.Keypad3,
-            KeyCode.Keypad4,
-            KeyCode.Keypad5,
-            KeyCode.Keypad6,
-            KeyCode.Keypad7,
-            KeyCode.Keypad8,
-            KeyCode.Keypad9
-        };
+        
         int idx = 0;
         
         foreach (KeyCode keycode in keyCodes)
@@ -128,6 +141,9 @@ public class FluctuationsNumView : MonoBehaviour
             OnPointerExitFunc();
         }
     }
-    
-    
+
+    public void OnButtonActiveImage(bool isButtonActive)
+    {
+        activeImage.gameObject.SetActive(isButtonActive);
+    }
 }

@@ -33,6 +33,7 @@ public class FluctuationsNumPresenter : MonoBehaviour
         view.OnInputNum = model.OnInputNum;
         view.OnDeleteNum = model.OnDeleteNum;
         view.OnInputWheel = model.OnInputMouseWheel;
+        model.OnButtonAction = view.OnButtonActiveImage;
         model.CurrentNum = 0;
     }
     
