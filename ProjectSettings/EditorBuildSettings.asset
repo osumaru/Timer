@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scene/Timer.unity
+    guid: 64d20b4c30c38d74abe0996aaad83189
   m_configObjects: {}

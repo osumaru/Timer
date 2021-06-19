@@ -36,7 +36,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 300}
+  m_AnchoredPosition: {x: 0, y: 325}
   m_SizeDelta: {x: 350, y: 350}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &392937794
@@ -263,7 +263,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 75, y: -100}
+  m_AnchoredPosition: {x: 75, y: -125}
   m_SizeDelta: {x: 150, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4379758770662778160
@@ -406,9 +406,13 @@ MonoBehaviour:
   timeGauge: {fileID: 2104570985}
   playButton: {fileID: 5356687910977941468}
   resetButton: {fileID: 7163083038687114090}
+  playButtonImage: {fileID: 5356687910977941471}
+  resetButtonImage: {fileID: 3054811149257653684}
   playButtonText: {fileID: 5356687910333537934}
   soundPrefab: {fileID: 2282827751656652329, guid: 0687a750e3a4af2439383ad410735c2b, type: 3}
   timeSpeed: 1
+  ActiveColor: {r: 1, g: 1, b: 1, a: 1}
+  DeactiveColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
 --- !u!114 &1975618120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -540,7 +544,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -75, y: -100}
+  m_AnchoredPosition: {x: -75, y: -125}
   m_SizeDelta: {x: 150, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5356687910977941470
@@ -711,6 +715,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2861683483974723851}
     m_Modifications:
+    - target: {fileID: 2868256529038625271, guid: 45af2aa6101ba904aba1400d7119e34d, type: 3}
+      propertyPath: m_Delegates.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7897307531875753070, guid: 45af2aa6101ba904aba1400d7119e34d, type: 3}
       propertyPath: m_Name
       value: Hour
@@ -824,6 +832,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2861683483974723851}
     m_Modifications:
+    - target: {fileID: 976157679072041487, guid: 45af2aa6101ba904aba1400d7119e34d, type: 3}
+      propertyPath: maxNum
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 7897307531875753070, guid: 45af2aa6101ba904aba1400d7119e34d, type: 3}
       propertyPath: m_Name
       value: Second
@@ -937,6 +949,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2861683483974723851}
     m_Modifications:
+    - target: {fileID: 976157679072041487, guid: 45af2aa6101ba904aba1400d7119e34d, type: 3}
+      propertyPath: maxNum
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 7897307531875753070, guid: 45af2aa6101ba904aba1400d7119e34d, type: 3}
       propertyPath: m_Name
       value: Minute
