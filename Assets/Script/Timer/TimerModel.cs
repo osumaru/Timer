@@ -9,9 +9,6 @@ using UniRx;
 
 public class TimerModel
 {
-    FluctuationsNumPresenter hourNumPresenter;
-    FluctuationsNumPresenter minuteNumPresenter;
-    FluctuationsNumPresenter secondNumPresenter;
 
     public static TimerStateIdle stateIdle { get; }  = new TimerStateIdle();
     public static TimerStatePause statePause { get; }  = new TimerStatePause();
@@ -28,14 +25,8 @@ public class TimerModel
     readonly float secondToHourTime = 3600.0f;
     readonly float secondToMinuteTime = 60.0f;
 
-    public void Initialize(
-        FluctuationsNumPresenter hourPresenter,
-        FluctuationsNumPresenter minutePresenter,
-        FluctuationsNumPresenter secondPresenter)
+    public void Initialize()
     {
-        hourNumPresenter = hourPresenter;
-        minuteNumPresenter = minutePresenter;
-        secondNumPresenter = secondPresenter;
         stateIdle.timerModel = this;
         statePause.timerModel = this;
         statePlaying.timerModel = this;
@@ -47,33 +38,11 @@ public class TimerModel
         timerState.Value.StateUpdate(deltaTime);
     }
 
-    
-    /// <summary>
-    /// 秒単位で持っている時間を単位毎に変換して振り分け
-    /// </summary>
-    public void TotalTimeToUnitTime()
+    public void AddNum(int addNum)
     {
-        float showTime = currentTime.Value + 1.0f - 1E-06f;
-        int intHourNum = (int) Mathf.Floor(showTime / secondToHourTime);
-        hourNumPresenter.Model.CurrentNum = intHourNum;
-        showTime -= 3600.0f * intHourNum;
-        int intMinuteNum = (int) Mathf.Floor(showTime / secondToMinuteTime);
-        minuteNumPresenter.Model.CurrentNum = intMinuteNum;
-        showTime -=  60.0f * intMinuteNum;
-        int intSecondNum = (int) Mathf.Floor(showTime);
-        secondNumPresenter.Model.CurrentNum = intSecondNum;
+        currentTime.Value += addNum;
     }
-    
-    /// <summary>
-    /// 単位毎で持っている時間を合計して秒単位に変換
-    /// </summary>
-    public void UnitTimeToTotalTime()
-    {
-        float hourTime = hourNumPresenter.Model.CurrentNum * secondToHourTime;
-        float minuteTime = minuteNumPresenter.Model.CurrentNum * secondToMinuteTime;
-        float secondTime = secondNumPresenter.Model.CurrentNum;
-        originalTime = hourTime + minuteTime + secondTime;
-    }
+   
 
     public void OnClickPlayButton()
     {

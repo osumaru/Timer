@@ -7,7 +7,6 @@ public class TimerStatePlaying : ITimerState
     public override void StateUpdate(float deltaTime)
     {
         timerModel.currentTime.Value -= deltaTime;
-        timerModel.TotalTimeToUnitTime();
         if (timerModel.currentTime.Value <= 0.0f)
         {
             timerModel.currentTime.Value = 0.0f;
@@ -15,9 +14,9 @@ public class TimerStatePlaying : ITimerState
         }
     }
     
-    public override void OnClickPlayButton()
+    public override ITimerState OnClickPlayButton()
     {
-        timerModel.timerState.Value = TimerModel.statePause;
+        return TimerModel.statePause;
     }
 
 }

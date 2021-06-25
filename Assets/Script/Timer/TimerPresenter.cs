@@ -4,35 +4,30 @@ using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
+
 public class TimerPresenter : MonoBehaviour
 {
-    [SerializeField]
-    TimerView view;
 
     TimerModel model;
 
     [SerializeField]
-    FluctuationsNumPresenter hourNumPresenter;
-
-    [SerializeField] 
-    FluctuationsNumPresenter minutePresenter;
+    TimerView view;
 
     [SerializeField]
-    FluctuationsNumPresenter secondPresenter;
-
-
+    FluctuationsNumView[] numViews;
     
     // Start is called before the first frame update
     void Awake()
     {
         model = new TimerModel();
-        model.Initialize(hourNumPresenter, minutePresenter, secondPresenter);
+        model.Initialize();
         view.OnClickPlay = model.OnClickPlayButton;
         view.OnClickReset = model.OnClickResetButton;
-        model.timerState.Subscribe(value =>
+        model.timerState.Subscribe(nextState =>
         {
-            view.OnStateChange(model.preTimerState, value);
-            model.preTimerState = value;
+            model.preTimerState?.Exit();
+            nextState?.Enter();
+            model.preTimerState = nextState;
         });
         model.currentTime.Subscribe(value =>
         {
@@ -45,16 +40,11 @@ public class TimerPresenter : MonoBehaviour
         TimerModel.statePlaying.OnStateEnter.AddListener(view.StatePlayingEnter);
         TimerModel.statePause.OnStateExit.AddListener(view.StatePauseExit);
         TimerModel.stateStop.OnStateExit.AddListener(view.StateStopExit);
-        FluctuationsNumPresenter[] presenters =
+        foreach (var view in numViews)
         {
-            hourNumPresenter,
-            minutePresenter,
-            secondPresenter
-        };
-        foreach (FluctuationsNumPresenter presenter in presenters)
-        {
-            TimerModel.stateIdle.OnStateEnter.AddListener(presenter.view.OnButtonActive);
-            TimerModel.stateIdle.OnStateExit.AddListener(presenter.view.OnButtonDeactive);
+            view.OnAddNum = model.AddNum;
+            TimerModel.stateIdle.OnStateEnter.AddListener(view.OnButtonActive);
+            TimerModel.stateIdle.OnStateExit.AddListener(view.OnButtonDeactive);
         }
         view.OnTimeUpdate = model.TimeUpdate;
         model.timerState.Value = TimerModel.stateIdle;

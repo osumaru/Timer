@@ -5,20 +5,16 @@ using UnityEngine;
 
 public class TimerStateIdle : ITimerState
 {
-    public override void StateUpdate(float deltaTime)
+    public override void Enter()
     {
-        timerModel.UnitTimeToTotalTime();
+        base.Enter();
         timerModel.currentTime.Value = timerModel.originalTime;
     }
 
-    public override void OnClickPlayButton()
+    public override ITimerState OnClickPlayButton()
     {
 
-        timerModel.timerState.Value = TimerModel.statePlaying;
-    }
-
-    public override void OnClickResetButton()
-    {
+        return TimerModel.statePlaying;
     }
     
 }

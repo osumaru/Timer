@@ -4,10 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
-
+using UniRx;
 
 public class FluctuationsNumView : MonoBehaviour
 {
+    [SerializeField]
+    int maxNum = 100;
+
+    [SerializeField]
+    int unitScale = 0;
+
     [SerializeField] 
     Button countUpButton;
 
@@ -29,36 +35,35 @@ public class FluctuationsNumView : MonoBehaviour
 
     public Action OnClickNum;
 
-    public Action OnPointerExitFunc;
+    public Action<int> OnAddNum;
 
-    public Action OnPointerEnterFunc;
+    bool isButtonActive = false;
 
-    public Action<int> OnInputNum;
-
-    public Action OnDeleteNum;
-
-    public Action<float> OnInputWheel;
+    bool isPointerStay = false;
 
     bool isActiveButton = true;
-    struct hogehoge
+
+    int currentNum = 0;
+    int previousNum = 0;
+    struct KeyNumInput
     {
         public KeyCode keyPad;
         public KeyCode alpha;
     }
     
     
-    readonly hogehoge[] keyCodes = 
+    readonly KeyNumInput[] keyCodes = 
     {
-        new hogehoge{alpha = KeyCode.Alpha0,keyPad = KeyCode.Keypad0},
-        new hogehoge{alpha = KeyCode.Alpha1,keyPad = KeyCode.Keypad1},
-        new hogehoge{alpha = KeyCode.Alpha2,keyPad = KeyCode.Keypad2},
-        new hogehoge{alpha = KeyCode.Alpha3,keyPad = KeyCode.Keypad3},
-        new hogehoge{alpha = KeyCode.Alpha4,keyPad = KeyCode.Keypad4},
-        new hogehoge{alpha = KeyCode.Alpha5,keyPad = KeyCode.Keypad5},
-        new hogehoge{alpha = KeyCode.Alpha6,keyPad = KeyCode.Keypad6},
-        new hogehoge{alpha = KeyCode.Alpha7,keyPad = KeyCode.Keypad7},
-        new hogehoge{alpha = KeyCode.Alpha8,keyPad = KeyCode.Keypad8},
-        new hogehoge{alpha = KeyCode.Alpha9,keyPad = KeyCode.Keypad9}
+        new KeyNumInput{alpha = KeyCode.Alpha1,keyPad = KeyCode.Keypad1},
+        new KeyNumInput{alpha = KeyCode.Alpha2,keyPad = KeyCode.Keypad2},
+        new KeyNumInput{alpha = KeyCode.Alpha3,keyPad = KeyCode.Keypad3},
+        new KeyNumInput{alpha = KeyCode.Alpha4,keyPad = KeyCode.Keypad4},
+        new KeyNumInput{alpha = KeyCode.Alpha5,keyPad = KeyCode.Keypad5},
+        new KeyNumInput{alpha = KeyCode.Alpha6,keyPad = KeyCode.Keypad6},
+        new KeyNumInput{alpha = KeyCode.Alpha7,keyPad = KeyCode.Keypad7},
+        new KeyNumInput{alpha = KeyCode.Alpha8,keyPad = KeyCode.Keypad8},
+        new KeyNumInput{alpha = KeyCode.Alpha9,keyPad = KeyCode.Keypad9},
+        new KeyNumInput{alpha = KeyCode.Alpha0,keyPad = KeyCode.Keypad0},
     };
     
 
@@ -75,14 +80,24 @@ public class FluctuationsNumView : MonoBehaviour
         entry.eventID = EventTriggerType.PointerExit;
         entry.callback.AddListener(OnPointerExit);
         eventTrigger.triggers.Add(entry);
-        
+    }
+
+    public void Initialized()
+    {
+    }
+
+    public void OnChangedNum(int num)
+    {
+        currentNum = num / unitScale;
+        currentNum %= maxNum;
+        viewNum.text = currentNum.ToString();
     }
 
     // Update is called once per frame
     void Update()
     {
         int idx = 0;
-        foreach (hogehoge keycode in keyCodes)
+        foreach (var keycode in keyCodes)
         {
             if (Input.GetKeyDown(keycode.alpha) || Input.GetKeyDown(keycode.keyPad))
             {
@@ -95,7 +110,7 @@ public class FluctuationsNumView : MonoBehaviour
         {
             OnDeleteNum();
         }
-        OnInputWheel(Input.mouseScrollDelta.y);
+        OnInputMouseWheel(Input.mouseScrollDelta.y);
         if(Input.GetMouseButtonDown(0) && OnClickNum != null)
         {
             OnClickNum();
@@ -104,39 +119,22 @@ public class FluctuationsNumView : MonoBehaviour
 
     void OnClickCountUpButton()
     {
-        if (OnClickCountUp != null)
-        {
-            OnClickCountUp();
-        }
+        AddNumOnUnitScale(1);
     }
 
     void OnClickCountDownButton()
     {
-        if (OnClickCountDown != null)
-        {
-            OnClickCountDown();
-        }
-    }
-
-    public void OnChangedNum(int num)
-    {
-        viewNum.text = num.ToString();
+        AddNumOnUnitScale(-1);
     }
 
     void OnPointerEnter(BaseEventData eventData)
     {
-        if (OnPointerEnterFunc != null)
-        {
-            OnPointerEnterFunc();
-        }
+        isPointerStay = true;
     }
 
     void OnPointerExit(BaseEventData eventData)
     {
-        if (OnPointerExitFunc != null)
-        {
-            OnPointerExitFunc();
-        }
+        isPointerStay = false;
     }
 
     public void OnButtonActiveImage(bool isButtonActive)
@@ -156,5 +154,45 @@ public class FluctuationsNumView : MonoBehaviour
         isActiveButton = true;
         countDonwButton.gameObject.SetActive(true);
         countUpButton.gameObject.SetActive(true);
+    }
+
+
+    public void OnDeleteNum()
+    {
+        if (isButtonActive)
+        {
+            AddNumOnUnitScale(0 - currentNum);
+
+        }
+    }
+
+
+    public void OnInputMouseWheel(float inputWheel)
+    {
+        if (isPointerStay)
+        {
+            AddNumOnUnitScale((int)inputWheel);
+        }
+    }
+    public void OnInputNum(int num)
+    {
+        if (isButtonActive)
+        {
+            int tempNum = currentNum;
+            //êîéöÇ™2åÖÇ…é˚Ç‹ÇÈÇÊÇ§Ç…âE(â∫)Ç©ÇÁåJÇËè„Ç∞ÇƒêîéöÇì¸óÕ
+            tempNum *= 10;
+            tempNum += num;
+            tempNum %= 100;
+            if (tempNum < maxNum)
+            {
+                AddNumOnUnitScale(tempNum - currentNum);
+            }
+        }
+    }
+
+    void AddNumOnUnitScale(int num)
+    {
+        OnAddNum(num * unitScale);
+
     }
 }

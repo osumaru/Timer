@@ -4,21 +4,14 @@ using UnityEngine;
 
 public class TimerStateStop : ITimerState
 {
-    public override void StateUpdate(float deltaTime)
+
+    public override ITimerState OnClickPlayButton()
     {
+        return TimerModel.stateIdle;
     }
 
-    public override void OnClickPlayButton()
+    public override ITimerState OnClickResetButton()
     {
-        timerModel.currentTime.Value = timerModel.originalTime;
-        timerModel.TotalTimeToUnitTime();
-        timerModel.timerState.Value = TimerModel.stateIdle;
-    }
-
-    public override void OnClickResetButton()
-    {
-        timerModel.currentTime.Value = timerModel.originalTime;
-        timerModel.TotalTimeToUnitTime();
-        timerModel.timerState.Value = TimerModel.stateIdle;
+        return = TimerModel.stateIdle;
     }
 }

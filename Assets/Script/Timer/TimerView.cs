@@ -59,12 +59,6 @@ public class TimerView : MonoBehaviour
         
     }
 
-    public void OnStateChange(ITimerState preState, ITimerState nextState)
-    {
-        preState?.Exit();
-        nextState?.Enter();
-    }
-
     public void StateIdleEnter()
     {
         if (sound != null)
