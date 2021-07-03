@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 using UniRx;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
+using Image = UnityEngine.UI.Image;
 
 public class FluctuationsNumView : MonoBehaviour
 {
@@ -29,15 +32,9 @@ public class FluctuationsNumView : MonoBehaviour
     [SerializeField]
     EventTrigger eventTrigger;
 
-    public Action OnClickCountUp;
-
-    public Action OnClickCountDown;
-
-    public Action OnClickNum;
-
     public Action<int> OnAddNum;
 
-    bool isButtonActive = false;
+    ReactiveProperty<bool> isButtonActive = new ReactiveProperty<bool>(false);
 
     bool isPointerStay = false;
 
@@ -54,6 +51,7 @@ public class FluctuationsNumView : MonoBehaviour
     
     readonly KeyNumInput[] keyCodes = 
     {
+        new KeyNumInput{alpha = KeyCode.Alpha0,keyPad = KeyCode.Keypad0},
         new KeyNumInput{alpha = KeyCode.Alpha1,keyPad = KeyCode.Keypad1},
         new KeyNumInput{alpha = KeyCode.Alpha2,keyPad = KeyCode.Keypad2},
         new KeyNumInput{alpha = KeyCode.Alpha3,keyPad = KeyCode.Keypad3},
@@ -63,7 +61,6 @@ public class FluctuationsNumView : MonoBehaviour
         new KeyNumInput{alpha = KeyCode.Alpha7,keyPad = KeyCode.Keypad7},
         new KeyNumInput{alpha = KeyCode.Alpha8,keyPad = KeyCode.Keypad8},
         new KeyNumInput{alpha = KeyCode.Alpha9,keyPad = KeyCode.Keypad9},
-        new KeyNumInput{alpha = KeyCode.Alpha0,keyPad = KeyCode.Keypad0},
     };
     
 
@@ -80,17 +77,18 @@ public class FluctuationsNumView : MonoBehaviour
         entry.eventID = EventTriggerType.PointerExit;
         entry.callback.AddListener(OnPointerExit);
         eventTrigger.triggers.Add(entry);
+        isButtonActive.Subscribe(OnButtonActiveImage);
     }
 
     public void Initialized()
     {
+        OnChangedNum(0);
     }
 
     public void OnChangedNum(int num)
     {
-        currentNum = num / unitScale;
-        currentNum %= maxNum;
-        viewNum.text = currentNum.ToString();
+         int showNum = num / unitScale;
+        viewNum.text = showNum.ToString();
     }
 
     // Update is called once per frame
@@ -111,12 +109,16 @@ public class FluctuationsNumView : MonoBehaviour
             OnDeleteNum();
         }
         OnInputMouseWheel(Input.mouseScrollDelta.y);
-        if(Input.GetMouseButtonDown(0) && OnClickNum != null)
+        if(Input.GetMouseButtonDown(0))
         {
-            OnClickNum();
+            OnClick();
         }
     }
 
+    void OnClick()
+    {
+        isButtonActive.Value = isPointerStay;
+    }
     void OnClickCountUpButton()
     {
         AddNumOnUnitScale(1);
@@ -159,10 +161,9 @@ public class FluctuationsNumView : MonoBehaviour
 
     public void OnDeleteNum()
     {
-        if (isButtonActive)
+        if (isButtonActive.Value)
         {
             AddNumOnUnitScale(0 - currentNum);
-
         }
     }
 
@@ -176,10 +177,9 @@ public class FluctuationsNumView : MonoBehaviour
     }
     public void OnInputNum(int num)
     {
-        if (isButtonActive)
+        if (isButtonActive.Value)
         {
             int tempNum = currentNum;
-            //êîéöÇ™2åÖÇ…é˚Ç‹ÇÈÇÊÇ§Ç…âE(â∫)Ç©ÇÁåJÇËè„Ç∞ÇƒêîéöÇì¸óÕ
             tempNum *= 10;
             tempNum += num;
             tempNum %= 100;
@@ -192,7 +192,24 @@ public class FluctuationsNumView : MonoBehaviour
 
     void AddNumOnUnitScale(int num)
     {
-        OnAddNum(num * unitScale);
+        int preNum = currentNum;
+        currentNum += num * unitScale;
+        while (currentNum < 0)
+        {
+            currentNum += maxNum * unitScale;
+        }
 
+        currentNum %= maxNum * unitScale;
+        int addTime = currentNum - preNum;
+        OnAddNum(addTime);
+        OnChangedNum(currentNum);
+    }
+
+    public void OnTimeChange(float timerCurrentNum)
+    {
+        int newNum = (int) Mathf.Ceil(timerCurrentNum) / unitScale;
+        newNum %= maxNum;
+        currentNum = newNum * unitScale;
+        OnChangedNum(currentNum);
     }
 }

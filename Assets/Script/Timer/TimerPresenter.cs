@@ -14,6 +14,9 @@ public class TimerPresenter : MonoBehaviour
     TimerView view;
 
     [SerializeField]
+    TimerStateView stateView;
+
+    [SerializeField]
     FluctuationsNumView[] numViews;
     
     // Start is called before the first frame update
@@ -21,8 +24,10 @@ public class TimerPresenter : MonoBehaviour
     {
         model = new TimerModel();
         model.Initialize();
-        view.OnClickPlay = model.OnClickPlayButton;
-        view.OnClickReset = model.OnClickResetButton;
+        stateView.OnClickPlay = model.OnClickPlayButton;
+        stateView.OnClickReset = model.OnClickResetButton;
+        stateView.OnClickStop = model.OnClickStopButton;
+        stateView.OnClickPause = model.OnClickPauseButton;
         model.timerState.Subscribe(nextState =>
         {
             model.preTimerState?.Exit();
@@ -32,19 +37,25 @@ public class TimerPresenter : MonoBehaviour
         model.currentTime.Subscribe(value =>
         {
             view.OnTimeChange(value, model.originalTime);
+            foreach (var numView in numViews)
+            {
+                numView.OnTimeChange(value);
+                
+            }
         });
 
-        TimerModel.stateIdle.OnStateEnter.AddListener(view.StateIdleEnter);
-        TimerModel.statePause.OnStateEnter.AddListener(view.StatePauseEnter);
-        TimerModel.stateStop.OnStateEnter.AddListener(view.StateStopEnter);
-        TimerModel.statePlaying.OnStateEnter.AddListener(view.StatePlayingEnter);
-        TimerModel.statePause.OnStateExit.AddListener(view.StatePauseExit);
-        TimerModel.stateStop.OnStateExit.AddListener(view.StateStopExit);
-        foreach (var view in numViews)
+        TimerModel.stateIdle.OnStateEnter.AddListener(stateView.StateIdleEnter);
+        TimerModel.statePause.OnStateEnter.AddListener(stateView.StatePauseEnter);
+        TimerModel.StateAlarm.OnStateEnter.AddListener(stateView.StateAlarmEnter);
+        TimerModel.statePlaying.OnStateEnter.AddListener(stateView.StatePlayingEnter);
+        TimerModel.statePause.OnStateExit.AddListener(stateView.StatePauseExit);
+        TimerModel.StateAlarm.OnStateExit.AddListener(stateView.StateAlarmExit);
+        foreach (var numView in numViews)
         {
-            view.OnAddNum = model.AddNum;
-            TimerModel.stateIdle.OnStateEnter.AddListener(view.OnButtonActive);
-            TimerModel.stateIdle.OnStateExit.AddListener(view.OnButtonDeactive);
+            numView.OnAddNum = model.AddNum;
+            TimerModel.stateIdle.OnStateEnter.AddListener(numView.OnButtonActive);
+            TimerModel.stateIdle.OnStateExit.AddListener(numView.OnButtonDeactive);
+            numView.Initialized();
         }
         view.OnTimeUpdate = model.TimeUpdate;
         model.timerState.Value = TimerModel.stateIdle;

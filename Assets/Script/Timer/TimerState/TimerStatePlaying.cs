@@ -10,11 +10,11 @@ public class TimerStatePlaying : ITimerState
         if (timerModel.currentTime.Value <= 0.0f)
         {
             timerModel.currentTime.Value = 0.0f;
-            timerModel.timerState.Value = TimerModel.stateStop;
+            timerModel.timerState.Value = TimerModel.StateAlarm;
         }
     }
     
-    public override ITimerState OnClickPlayButton()
+    public override ITimerState OnPauseCommand()
     {
         return TimerModel.statePause;
     }

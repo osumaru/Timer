@@ -12,7 +12,7 @@ public class TimerModel
 
     public static TimerStateIdle stateIdle { get; }  = new TimerStateIdle();
     public static TimerStatePause statePause { get; }  = new TimerStatePause();
-    public static TimerStateStop stateStop { get; }  = new TimerStateStop();
+    public static TimerStateAlarm StateAlarm { get; }  = new TimerStateAlarm();
     public static TimerStatePlaying statePlaying { get; }  = new TimerStatePlaying();
 
     public ReactiveProperty<ITimerState> timerState { get; } = new ReactiveProperty<ITimerState>();
@@ -21,16 +21,14 @@ public class TimerModel
     public ReactiveProperty<float> currentTime { get; } = new ReactiveProperty<float>(0.0f);
 
     public float originalTime = 0.0f;
-
-    readonly float secondToHourTime = 3600.0f;
-    readonly float secondToMinuteTime = 60.0f;
+    
 
     public void Initialize()
     {
         stateIdle.timerModel = this;
         statePause.timerModel = this;
         statePlaying.timerModel = this;
-        stateStop.timerModel = this;
+        StateAlarm.timerModel = this;
     }
 
     public void TimeUpdate(float deltaTime)
@@ -40,17 +38,31 @@ public class TimerModel
 
     public void AddNum(int addNum)
     {
-        currentTime.Value += addNum;
+        originalTime += addNum;
     }
    
 
     public void OnClickPlayButton()
     {
-        timerState.Value.OnClickPlayButton();
+        ITimerState state = timerState.Value.OnPlayCommand();
+        timerState.Value = state ?? timerState.Value;
     }
 
     public void OnClickResetButton()
     {
-        timerState.Value.OnClickResetButton();
+        ITimerState state = timerState.Value.OnResetCommand();
+        timerState.Value = state ?? timerState.Value;
+    }
+    
+    public void OnClickStopButton()
+    {
+        ITimerState state = timerState.Value.OnStopCommand();
+        timerState.Value = state ?? timerState.Value;
+    }
+    
+    public void OnClickPauseButton()
+    {
+        ITimerState state = timerState.Value.OnPauseCommand();
+        timerState.Value = state ?? timerState.Value;
     }
 }

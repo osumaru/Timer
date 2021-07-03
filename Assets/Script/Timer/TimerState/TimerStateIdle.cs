@@ -11,7 +11,12 @@ public class TimerStateIdle : ITimerState
         timerModel.currentTime.Value = timerModel.originalTime;
     }
 
-    public override ITimerState OnClickPlayButton()
+    public override void StateUpdate(float deltaTime)
+    {
+        timerModel.currentTime.Value = timerModel.originalTime;
+    }
+
+    public override ITimerState OnPlayCommand()
     {
 
         return TimerModel.statePlaying;

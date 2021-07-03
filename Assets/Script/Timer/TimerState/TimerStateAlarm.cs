@@ -2,16 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimerStatePause : ITimerState
+public class TimerStateAlarm : ITimerState
 {
-
-    public override ITimerState OnPlayCommand()
+    public override ITimerState OnStopCommand()
     {
-        return TimerModel.statePlaying;
+        return TimerModel.stateIdle;
     }
-
+    
     public override ITimerState OnResetCommand()
-    {        
+    {
         return TimerModel.stateIdle;
     }
 }

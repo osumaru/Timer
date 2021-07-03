@@ -21,7 +21,11 @@ public class ITimerState
     }
     public virtual void StateUpdate(float deltaTime){}
 
-    public virtual ITimerState OnClickResetButton(){ return TimerModel.stateIdle; }
+    public virtual ITimerState OnPlayCommand(){ return null; }
 
-    public virtual ITimerState OnClickPlayButton() { return TimerModel.stateIdle; }
+    public virtual ITimerState OnResetCommand() { return null; }
+    
+    public virtual ITimerState OnStopCommand() { return null; }
+    
+    public virtual ITimerState OnPauseCommand() { return null; }
 }
