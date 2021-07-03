@@ -19,4 +19,12 @@ public class TimerStatePlaying : ITimerState
         return TimerModel.statePause;
     }
 
+    public override ITimerState OnStopCommand()
+    {        
+        return TimerModel.stateIdle;
+    }
+    public override ITimerState OnResetCommand()
+    {        
+        return TimerModel.stateIdle;
+    }
 }

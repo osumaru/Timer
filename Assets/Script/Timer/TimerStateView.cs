@@ -11,21 +11,9 @@ public class TimerStateView : MonoBehaviour
     
     [SerializeField] 
     Button playButton;
-    
-    [SerializeField] 
-    Button resetButton;
-    
+
     [SerializeField]
-    Text playButtonText;
-    
-    [SerializeField]
-    Image resetButtonImage;    
-    
-    [SerializeField]
-    Color ActiveColor = Color.white;
-    
-    [SerializeField]
-    Color DeactiveColor = Color.black;
+    Dropdown dropdown;
     
     [SerializeField]
     GameObject alarmPrefab;
@@ -36,24 +24,27 @@ public class TimerStateView : MonoBehaviour
     public Action OnClickReset;
     public Action OnClickStop;
     public Action OnClickPause;
-    TimerState timerState = TimerState.Idle;
+    TimerState timerState = TimerState.Stop;
 
     enum TimerState
     {
-        Idle,
-        Playing,
-        Alarm,
+        Stop,
+        Play,
         Pause,
+        Reset,
+        stateNum,
     }
 
-    readonly string playText = "Play";
-    readonly string stopText = "Stop";
 
     void Awake()
     {
-        playButtonText.text = playText;
         playButton.onClick.AddListener(OnClickPlayButton);
-        resetButton.onClick.AddListener(OnClickResetButton);
+        List<Dropdown.OptionData> optionList = new List<Dropdown.OptionData>();
+        for (int i = 0; i < (int) TimerState.stateNum; i++)
+        {
+            optionList.Add(new Dropdown.OptionData(((TimerState) i).ToString()));
+        }
+        dropdown.AddOptions(optionList);
     }
     
     public void StateIdleEnter()
@@ -62,27 +53,18 @@ public class TimerStateView : MonoBehaviour
         {
             Destroy(alarm);
         }
-        playButtonText.text = playText;
-        ResetButtonDeactive();
-        timerState = TimerState.Idle;
 
     }
 
     public void StatePauseEnter()
     {
-        playButtonText.text = playText;
-        ResetButtonActive();
-        timerState = TimerState.Pause;
     }
 
     public void StatePauseExit()
     {
-        ResetButtonDeactive();
     }
     public void StatePlayingEnter()
     {
-        playButtonText.text = stopText;
-        timerState = TimerState.Playing;
     }
 
     public void StateAlarmEnter()
@@ -91,52 +73,26 @@ public class TimerStateView : MonoBehaviour
         {
             alarm = Instantiate(alarmPrefab);
         }
-        playButtonText.text = stopText;
-        ResetButtonActive();
-        timerState = TimerState.Alarm;
     }
 
     public void StateAlarmExit()
     {
-        ResetButtonDeactive();
-    }
-    
-    void ResetButtonDeactive()
-    {
-        resetButton.enabled = false;
-        resetButtonImage.color = DeactiveColor;
     }
 
-    void ResetButtonActive()
-    {
-        resetButton.enabled = true;
-        resetButtonImage.color = ActiveColor;
-    }
-    
     public void OnClickPlayButton()
     {
-        switch (timerState)
+        switch ((TimerState)dropdown.value)
         {
-            case TimerState.Idle:
+            case TimerState.Play:
                 OnClickPlay?.Invoke();
                 break;
-            case TimerState.Alarm:
+            case TimerState.Stop:
                 OnClickStop?.Invoke();
                 break;
             case TimerState.Pause:
-                OnClickPlay?.Invoke();
-                break;
-            case TimerState.Playing:
                 OnClickPause?.Invoke();
                 break;
-        }
-    }
-    public void OnClickResetButton()
-    {        
-        switch (timerState)
-        {
-            case TimerState.Alarm:
-            case TimerState.Pause:
+            case TimerState.Reset:
                 OnClickReset?.Invoke();
                 break;
         }

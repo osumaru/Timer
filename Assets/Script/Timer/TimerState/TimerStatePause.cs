@@ -14,4 +14,8 @@ public class TimerStatePause : ITimerState
     {        
         return TimerModel.stateIdle;
     }
+    public override ITimerState OnStopCommand()
+    {        
+        return TimerModel.stateIdle;
+    }
 }
