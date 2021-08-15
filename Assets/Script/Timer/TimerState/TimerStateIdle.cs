@@ -19,7 +19,7 @@ public class TimerStateIdle : ITimerState
     public override ITimerState OnPlayCommand()
     {
 
-        return TimerModel.statePlaying;
+        return timerModel.statePlaying;
     }
     
 }

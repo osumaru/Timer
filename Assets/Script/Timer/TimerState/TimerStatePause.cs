@@ -7,11 +7,11 @@ public class TimerStatePause : ITimerState
 
     public override ITimerState OnPlayCommand()
     {
-        return TimerModel.statePlaying;
+        return timerModel.statePlaying;
     }
 
     public override ITimerState OnResetCommand()
     {        
-        return TimerModel.stateIdle;
+        return timerModel.stateIdle;
     }
 }

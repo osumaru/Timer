@@ -10,10 +10,10 @@ using UniRx;
 public class TimerModel
 {
 
-    public static TimerStateIdle stateIdle { get; }  = new TimerStateIdle();
-    public static TimerStatePause statePause { get; }  = new TimerStatePause();
-    public static TimerStateAlarm StateAlarm { get; }  = new TimerStateAlarm();
-    public static TimerStatePlaying statePlaying { get; }  = new TimerStatePlaying();
+    public TimerStateIdle stateIdle { get; }  = new TimerStateIdle();
+    public TimerStatePause statePause { get; }  = new TimerStatePause();
+    public TimerStateAlarm StateAlarm { get; }  = new TimerStateAlarm();
+    public TimerStatePlaying statePlaying { get; }  = new TimerStatePlaying();
 
     public ReactiveProperty<ITimerState> timerState { get; } = new ReactiveProperty<ITimerState>();
     public ITimerState preTimerState;

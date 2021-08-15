@@ -6,11 +6,11 @@ public class TimerStateAlarm : ITimerState
 {
     public override ITimerState OnStopCommand()
     {
-        return TimerModel.stateIdle;
+        return timerModel.stateIdle;
     }
     
     public override ITimerState OnResetCommand()
     {
-        return TimerModel.stateIdle;
+        return timerModel.stateIdle;
     }
 }
